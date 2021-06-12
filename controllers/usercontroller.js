@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { UserModel } = require("../models");
 const { UniqueConstraintError } = require("sequelize/lib/errors");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 router.post('/register', async (req, res) => {
 
@@ -9,7 +10,7 @@ router.post('/register', async (req, res) => {
     try {
         const User = await UserModel.create({
             email,
-            password
+            password: bcrypt.hashSync(password, 13)
         });
     
         let token = jwt.sign({id: User.id}, process.env.JWT_SECRET, {expiresIn: 60*60*24});
@@ -41,23 +42,31 @@ router.post('/login', async (req, res) => {
     try {
         const loginUser = await UserModel.findOne({
             where: {
-                email: email,
-                password: password
+                email: email
             },
         });
 
         if (loginUser) {
 
-            let token = jwt.sign({id: loginUser.id}, process.env.JWT_SECRET, {expiresIn: 60*60*24});
+            let passwordComparison = await bcrypt.compare(password, loginUser.password);
 
-            res.status(201).json ({
+            if (passwordComparison) {
+                let token = jwt.sign({id: loginUser.id}, process.env.JWT_SECRET, {expiresIn: 60*60*24});
+
+            res.status(200).json ({
                 message: "User successfully logged in",
                 user: loginUser,
                 sessionToken: token
             });
+
+            } else {
+            res.status(401).json ({
+                message: "Login failed (code 17)"
+            })
+        }
         } else {
             res.status(401).json ({
-                message: "Login failed",
+                message: "Login failed (code 23)"
             });
         }
 
