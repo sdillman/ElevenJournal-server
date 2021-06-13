@@ -1,2 +1,6 @@
 const UserModel = require("./User");
-module.exports = { UserModel };
+const JournalModel = require("./journal");
+
+module.exports = { 
+    UserModel, 
+    JournalModel };
