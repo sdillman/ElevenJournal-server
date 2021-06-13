@@ -1,8 +1,9 @@
     // ***** 4.2 EXPRESS ROUTER INTRODUCTION *****
 const Express = require("express");
 const router = Express.Router();
+let validateJWT = require("../middleware/validate-jwt");
 
-router.get('/practice', (req, res) => {
+router.get('/practice', validateJWT, (req, res) => {
     res.send('Hey!! This is a practice route!');
     // ^^ handler function
 });
