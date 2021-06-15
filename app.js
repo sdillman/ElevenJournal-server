@@ -3,6 +3,8 @@ const Express = require("express");
 const app = Express();
 const dbConnection = require("./db");
 
+app.use(require('./middleware/headers'));
+
 app.use(Express.json());
 /** MUST live above any routes (app.use()) **/
 
