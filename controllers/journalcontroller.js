@@ -127,7 +127,7 @@ router.put("/update/:entryId", validateJWT, async (req, res) => {
 */
 
 router.delete("/delete/:id", validateJWT, async (req, res) => {
-    const ownerID = req.user.id;
+    const ownerId = req.user.id;
     const journalId = req.params.id;
 
     try {
